@@ -63,6 +63,7 @@ public class FanMenu: MacawView {
         }
     }
     
+    public var isRotateMenuButton: Bool? = false
     public var onItemWillClick: ((_ button: FanMenuButton) -> ())?
     public var onItemDidClick: ((_ button: FanMenuButton) -> ())?
     
@@ -219,7 +220,14 @@ class FanMenuScene {
             during: fanMenu.duration + fanMenu.delay * Double(buttonsNode.contents.count - 1)
         )
         
-        animation = [backgroundAnimation, expandAnimation, buttonAnimation].combine()
+        if (fanMenu.isRotateMenuButton)! {
+            let toTransform = self.buttonNode.place.rotate(angle: Double.pi / 4)
+            let rotateAnimation = self.buttonNode.placeVar.animation(to: toTransform)
+            animation = [backgroundAnimation, expandAnimation, buttonAnimation, rotateAnimation].combine()
+        } else {
+            animation = [backgroundAnimation, expandAnimation, buttonAnimation].combine()
+        }
+        
         animation?.onComplete {
             callback()
         }
